@@ -20,7 +20,7 @@ public class WordCounterConcurrent {
     }
 
     public int countWords() throws IOException, InterruptedException {
-        final int numThreads = 4; // Puedes ajustar el número de hilos según tu CPU
+        final int numThreads = 4;
         final int[] wordCount = {0};
         BufferedReader reader = new BufferedReader(new FileReader(filename));
 
@@ -39,6 +39,9 @@ public class WordCounterConcurrent {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                
+                String threadName = Thread.currentThread().getName();
+                System.out.println("File processed by: " + threadName);
             });
             threads[i].start();
         }
