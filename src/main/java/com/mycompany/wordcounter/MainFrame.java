@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -23,6 +26,9 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    JTextArea log = new JTextArea();
+    JScrollPane sPanel = new JScrollPane();
+    
     public MainFrame() {
         initComponents();
 
@@ -34,6 +40,10 @@ public class MainFrame extends javax.swing.JFrame {
         comboBoxModel.addElement("1000000");
         comboBoxModel.addElement("2000000");
         ComboWords.setModel(comboBoxModel);
+        log = this.logArea;
+        
+        //sPanel = this.jScrollPane1;
+        //sPanel.setViewportView(log);
     }
 
     /**
@@ -60,6 +70,8 @@ public class MainFrame extends javax.swing.JFrame {
         msConc = new javax.swing.JLabel();
         counterSeq = new javax.swing.JLabel();
         counterConc = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        logArea = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -183,9 +195,17 @@ public class MainFrame extends javax.swing.JFrame {
         counterConc.setOpaque(true);
         getContentPane().add(counterConc, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 400, 100, 30));
 
+        logArea.setBackground(new java.awt.Color(102, 102, 102));
+        logArea.setColumns(20);
+        logArea.setForeground(new java.awt.Color(255, 255, 255));
+        logArea.setRows(5);
+        jScrollPane1.setViewportView(logArea);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 250, 320, 120));
+
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel10.setIcon(new javax.swing.ImageIcon("C:\\Users\\Xavi\\Documents\\NetBeansProjects\\wcTest\\src\\main\\java\\images\\bikini2.jpg")); // NOI18N
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -10, 910, 570));
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 880, 580));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -213,6 +233,9 @@ public class MainFrame extends javax.swing.JFrame {
             } else if (selectedValue.equals("2000000")) {
                 filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/2000000w.txt";
             }
+            
+            String sepatator = "---------------------------------------\n";
+            log.append(sepatator);
 
             long startTime = System.currentTimeMillis();
             WordCounterSequential sequentialCounter = new WordCounterSequential(filename);
@@ -223,12 +246,14 @@ public class MainFrame extends javax.swing.JFrame {
             counterSeq.setText(String.valueOf(wordCountSequential));
 
             startTime = System.currentTimeMillis();
-            WordCounterConcurrent concurrentCounter = new WordCounterConcurrent(filename);
+            WordCounterConcurrent concurrentCounter = new WordCounterConcurrent(filename, log);
             int wordCountConcurrent = concurrentCounter.countWords();
             endTime = System.currentTimeMillis();
             
             msConc.setText((endTime - startTime) + " ms");
             counterConc.setText(String.valueOf(wordCountConcurrent));
+            
+            log.getCaret().setDot(Integer.MAX_VALUE);
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -255,6 +280,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea logArea;
     private javax.swing.JLabel msConc;
     private javax.swing.JLabel msSeq;
     // End of variables declaration//GEN-END:variables

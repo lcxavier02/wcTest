@@ -7,6 +7,7 @@ package com.mycompany.wordcounter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -14,9 +15,11 @@ import java.io.IOException;
  */
 public class WordCounterConcurrent {
     private String filename;
+    JTextArea logger = new JTextArea();
 
-    public WordCounterConcurrent(String filename) {
+    public WordCounterConcurrent(String filename, JTextArea log) {
         this.filename = filename;
+        this.logger = log;
     }
 
     public int countWords() throws IOException, InterruptedException {
@@ -41,7 +44,9 @@ public class WordCounterConcurrent {
                 }
                 
                 String threadName = Thread.currentThread().getName();
-                System.out.println("File processed by: " + threadName);
+                String logArea = ("File processed by: " + threadName + "\n");
+                logger.setLineWrap(true);
+                logger.append(logArea);
             });
             threads[i].start();
         }
