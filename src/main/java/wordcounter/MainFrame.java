@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package com.mycompany.wordcounter;
+package wordcounter;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -17,15 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
-/**
- *
- * @author xvelazquez
- */
 public class MainFrame extends javax.swing.JFrame {
-
-    /**
-     * Creates new form MainFrame
-     */
     JTextArea log = new JTextArea();
     JScrollPane sPanel = new JScrollPane();
     
@@ -40,10 +28,8 @@ public class MainFrame extends javax.swing.JFrame {
         comboBoxModel.addElement("1000000");
         comboBoxModel.addElement("2000000");
         ComboWords.setModel(comboBoxModel);
-        log = this.logArea;
         
-        //sPanel = this.jScrollPane1;
-        //sPanel.setViewportView(log);
+        log = this.logArea;
     }
 
     /**
@@ -138,6 +124,7 @@ public class MainFrame extends javax.swing.JFrame {
         ButtonInitProgram.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         ButtonInitProgram.setForeground(new java.awt.Color(255, 255, 255));
         ButtonInitProgram.setText("Iniciar");
+        ButtonInitProgram.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ButtonInitProgram.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonInitProgramActionPerformed(evt);
@@ -211,7 +198,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ComboWordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboWordsActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_ComboWordsActionPerformed
 
     private void ButtonInitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonInitProgramActionPerformed
@@ -261,9 +248,6 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ButtonInitProgramActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonInitProgram;
