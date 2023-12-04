@@ -1,17 +1,16 @@
 package wordcounter;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.DefaultCaret;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class MainFrame extends javax.swing.JFrame {
     JTextArea log = new JTextArea();
@@ -201,25 +200,33 @@ public class MainFrame extends javax.swing.JFrame {
         
     }//GEN-LAST:event_ComboWordsActionPerformed
 
+    private String getFilename(String selectedValue) {
+        String userDir = System.getProperty("user.dir");
+        String separator = File.separator;
+
+        String filename = userDir + separator + "src" + separator + "main" + separator + 
+                "java" + separator + "documents" + separator + selectedValue + "w.txt";
+
+        return filename;
+    }
+
+    private int getTotalWords(String filename) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            int words = 0;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] lineWords = line.split("\\s+");
+                words += lineWords.length;
+            }
+            return words;
+        }
+    }
+    
     private void ButtonInitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonInitProgramActionPerformed
         try {
             String selectedValue = (String) ComboWords.getSelectedItem();
 
-            String filename = "";
-
-            if (selectedValue.equals("100")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/100w.txt";
-            } else if (selectedValue.equals("1000")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/1000w.txt";
-            } else if (selectedValue.equals("10000")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/10000w.txt";
-            } else if (selectedValue.equals("100000")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/100000w.txt";
-            } else if (selectedValue.equals("1000000")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/1000000w.txt";
-            } else if (selectedValue.equals("2000000")) {
-                filename = "C:/Users/Xavi/Documents/NetBeansProjects/wcTest/src/main/java/documents/2000000w.txt";
-            }
+            String filename = getFilename(selectedValue);
             
             String sepatator = "---------------------------------------\n";
             log.append(sepatator);
