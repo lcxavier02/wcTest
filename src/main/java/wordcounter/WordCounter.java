@@ -1,7 +1,5 @@
 package wordcounter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFrame;
 public class WordCounter {
