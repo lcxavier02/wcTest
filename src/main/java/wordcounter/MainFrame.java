@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -11,12 +12,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import javax.swing.JOptionPane;
 
 public class MainFrame extends javax.swing.JFrame {
     JTextArea log = new JTextArea();
     JScrollPane sPanel = new JScrollPane();
+    WordCounterRMIServer server;
+    WordCounterRMIClient client;
+    String filename;
+    String selectedValue;
     
-    public MainFrame() {
+    public MainFrame() throws RemoteException {
+        this.server = new WordCounterRMIServer();
+        this.client = new WordCounterRMIClient();
         initComponents();
 
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
@@ -40,11 +48,16 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        btnInitParalelo = new javax.swing.JButton();
+        clientBtn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        serverBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        msParalela = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         ButtonInitProgram = new javax.swing.JButton();
@@ -62,22 +75,13 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setBackground(new java.awt.Color(102, 102, 102));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Proyecto Segundo Parcial");
-        jLabel1.setAlignmentX(0.5F);
-        jLabel1.setOpaque(true);
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 10, 480, 60));
-
         jLabel2.setBackground(new java.awt.Color(102, 102, 102));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Contador de Palabras");
         jLabel2.setOpaque(true);
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 80, 250, 40));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 250, 40));
 
         jLabel3.setBackground(new java.awt.Color(102, 102, 102));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -85,7 +89,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Secuencial");
         jLabel3.setOpaque(true);
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 150, 40));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 150, 40));
 
         jLabel4.setBackground(new java.awt.Color(102, 102, 102));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -93,7 +97,28 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Concurrente");
         jLabel4.setOpaque(true);
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 150, 40));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 170, 150, 40));
+
+        btnInitParalelo.setBackground(new java.awt.Color(0, 0, 0));
+        btnInitParalelo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnInitParalelo.setForeground(new java.awt.Color(255, 255, 255));
+        btnInitParalelo.setText("Iniciar paralelo");
+        btnInitParalelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInitParaleloActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnInitParalelo, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 73, 160, 30));
+
+        clientBtn.setBackground(new java.awt.Color(0, 0, 0));
+        clientBtn.setForeground(new java.awt.Color(255, 255, 255));
+        clientBtn.setText("Cliente");
+        clientBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clientBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(clientBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 20, -1, 30));
 
         jLabel5.setBackground(new java.awt.Color(102, 102, 102));
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -101,7 +126,40 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Tiempo de ejecucion:");
         jLabel5.setOpaque(true);
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 450, 150, 30));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 150, 30));
+
+        serverBtn.setBackground(new java.awt.Color(0, 0, 0));
+        serverBtn.setForeground(new java.awt.Color(255, 255, 255));
+        serverBtn.setText("Servidor");
+        serverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(serverBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, -1, 30));
+
+        jLabel1.setBackground(new java.awt.Color(102, 102, 102));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Tiempo de ejecución");
+        jLabel1.setOpaque(true);
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 240, 160, 30));
+
+        msParalela.setBackground(new java.awt.Color(102, 102, 102));
+        msParalela.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        msParalela.setForeground(new java.awt.Color(255, 255, 255));
+        msParalela.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        msParalela.setOpaque(true);
+        getContentPane().add(msParalela, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 300, 160, 30));
+
+        jLabel11.setBackground(new java.awt.Color(102, 102, 102));
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Paralelo");
+        jLabel11.setOpaque(true);
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 170, 160, 40));
 
         jLabel6.setBackground(new java.awt.Color(102, 102, 102));
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -109,7 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Tiempo de ejecucion:");
         jLabel6.setOpaque(true);
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 460, 140, 30));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, 140, 30));
 
         jLabel7.setBackground(new java.awt.Color(102, 102, 102));
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -117,9 +175,9 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Num. Palabras");
         jLabel7.setOpaque(true);
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 130, 120, 30));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, 120, 30));
 
-        ButtonInitProgram.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonInitProgram.setBackground(new java.awt.Color(0, 0, 0));
         ButtonInitProgram.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         ButtonInitProgram.setForeground(new java.awt.Color(255, 255, 255));
         ButtonInitProgram.setText("Iniciar");
@@ -129,7 +187,7 @@ public class MainFrame extends javax.swing.JFrame {
                 ButtonInitProgramActionPerformed(evt);
             }
         });
-        getContentPane().add(ButtonInitProgram, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 130, 120, 30));
+        getContentPane().add(ButtonInitProgram, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 120, 30));
 
         ComboWords.setBackground(new java.awt.Color(102, 102, 102));
         ComboWords.setForeground(new java.awt.Color(255, 255, 255));
@@ -139,13 +197,13 @@ public class MainFrame extends javax.swing.JFrame {
                 ComboWordsActionPerformed(evt);
             }
         });
-        getContentPane().add(ComboWords, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 130, 100, 30));
+        getContentPane().add(ComboWords, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 10, 100, 30));
 
         msSeq.setBackground(new java.awt.Color(102, 102, 102));
         msSeq.setForeground(new java.awt.Color(255, 255, 255));
         msSeq.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msSeq.setOpaque(true);
-        getContentPane().add(msSeq, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 450, 120, 30));
+        getContentPane().add(msSeq, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 300, 120, 30));
 
         jLabel8.setBackground(new java.awt.Color(102, 102, 102));
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -153,7 +211,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Palabras contadas:");
         jLabel8.setOpaque(true);
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 400, 150, 30));
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 150, 30));
 
         jLabel9.setBackground(new java.awt.Color(102, 102, 102));
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -161,25 +219,25 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Palabras contadas:");
         jLabel9.setOpaque(true);
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 400, 140, 30));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 140, 30));
 
         msConc.setBackground(new java.awt.Color(102, 102, 102));
         msConc.setForeground(new java.awt.Color(255, 255, 255));
         msConc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msConc.setOpaque(true);
-        getContentPane().add(msConc, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 460, 120, 30));
+        getContentPane().add(msConc, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 300, 120, 30));
 
         counterSeq.setBackground(new java.awt.Color(102, 102, 102));
         counterSeq.setForeground(new java.awt.Color(255, 255, 255));
         counterSeq.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         counterSeq.setOpaque(true);
-        getContentPane().add(counterSeq, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 400, 100, 30));
+        getContentPane().add(counterSeq, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 240, 120, 30));
 
         counterConc.setBackground(new java.awt.Color(102, 102, 102));
         counterConc.setForeground(new java.awt.Color(255, 255, 255));
         counterConc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         counterConc.setOpaque(true);
-        getContentPane().add(counterConc, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 400, 100, 30));
+        getContentPane().add(counterConc, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 240, 120, 30));
 
         logArea.setBackground(new java.awt.Color(102, 102, 102));
         logArea.setColumns(20);
@@ -187,7 +245,7 @@ public class MainFrame extends javax.swing.JFrame {
         logArea.setRows(5);
         jScrollPane1.setViewportView(logArea);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 250, 320, 120));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 840, 150));
 
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel10.setIcon(new javax.swing.ImageIcon("C:\\Users\\Xavi\\Documents\\NetBeansProjects\\wcTest\\src\\main\\java\\images\\bikini2.jpg")); // NOI18N
@@ -204,7 +262,7 @@ public class MainFrame extends javax.swing.JFrame {
         String userDir = System.getProperty("user.dir");
         String separator = File.separator;
 
-        String filename = userDir + separator + "src" + separator + "main" + separator + 
+        filename = userDir + separator + "src" + separator + "main" + separator + 
                 "java" + separator + "documents" + separator + selectedValue + "w.txt";
 
         return filename;
@@ -224,13 +282,10 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void ButtonInitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonInitProgramActionPerformed
         try {
-            String selectedValue = (String) ComboWords.getSelectedItem();
-
-            String filename = getFilename(selectedValue);
+            selectedValue = (String) ComboWords.getSelectedItem();
+            filename = getFilename(selectedValue);
             
             int totalFileWords = getTotalWords(filename);
-            WordCounterRMIServer server = new WordCounterRMIServer();
-            server.connection();
             
             String sepatator = "---------------------------------------\n";
             log.append(sepatator);
@@ -261,14 +316,35 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ButtonInitProgramActionPerformed
 
+    private void clientBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientBtnActionPerformed
+        String Ip=JOptionPane.showInputDialog(null, "Server IP", "Client", JOptionPane.PLAIN_MESSAGE);
+        client.startClient(Ip, log);
+        serverBtn.setVisible(false);
+    }//GEN-LAST:event_clientBtnActionPerformed
+
+    private void serverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverBtnActionPerformed
+        String Ip=JOptionPane.showInputDialog(null, "Your IP", "Server", JOptionPane.PLAIN_MESSAGE);
+        server.connection(Ip, log);
+        clientBtn.setVisible(false);
+        btnInitParalelo.setVisible(false);
+    }//GEN-LAST:event_serverBtnActionPerformed
+
+    private void btnInitParaleloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInitParaleloActionPerformed
+        selectedValue = (String) ComboWords.getSelectedItem();
+        filename = getFilename(selectedValue);
+    }//GEN-LAST:event_btnInitParaleloActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonInitProgram;
     private javax.swing.JComboBox<String> ComboWords;
+    private javax.swing.JButton btnInitParalelo;
+    private javax.swing.JButton clientBtn;
     private javax.swing.JLabel counterConc;
     private javax.swing.JLabel counterSeq;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -280,6 +356,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea logArea;
     private javax.swing.JLabel msConc;
+    private javax.swing.JLabel msParalela;
     private javax.swing.JLabel msSeq;
+    private javax.swing.JButton serverBtn;
     // End of variables declaration//GEN-END:variables
 }

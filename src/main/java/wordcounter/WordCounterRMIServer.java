@@ -6,21 +6,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
+import javax.swing.JTextArea;
 
 public class WordCounterRMIServer extends UnicastRemoteObject implements WordCounterRMI {
     public WordCounterRMIServer() throws RemoteException {
         super();
     }
     
-    public void connection() {
+    public void connection(String ip, JTextArea logger) {
         try {
             WordCounterRMI server = new WordCounterRMIServer();
 
             LocateRegistry.createRegistry(1099);
                 
-            java.rmi.Naming.rebind("//"+"192.168.1.64"+":1099/WordCounter", server);
+            java.rmi.Naming.rebind("//"+ip+":1099/WordCounter", server);
             
-            System.out.println("Connected to server");
+            logger.append("Server initialized.\n");
         } catch (Exception e) {
             e.printStackTrace();
         }

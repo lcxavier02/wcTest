@@ -5,4 +5,5 @@ import java.rmi.RemoteException;
 
 public interface WordCounterRMI extends Remote {
     int countWords(String filename, int startWord, int endWord) throws RemoteException;
+    //String registerUser() throws RemoteException;
 }
