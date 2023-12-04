@@ -5,10 +5,25 @@ import java.rmi.server.UnicastRemoteObject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.registry.LocateRegistry;
 
 public class WordCounterRMIServer extends UnicastRemoteObject implements WordCounterRMI {
     public WordCounterRMIServer() throws RemoteException {
         super();
+    }
+    
+    public void connection() {
+        try {
+            WordCounterRMI server = new WordCounterRMIServer();
+
+            LocateRegistry.createRegistry(1099);
+                
+            java.rmi.Naming.rebind("//"+"192.168.1.64"+":1099/WordCounter", server);
+            
+            System.out.println("Connected to server");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public int countWords(String filename, int startWord, int endWord) throws RemoteException {

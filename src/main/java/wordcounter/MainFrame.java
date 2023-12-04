@@ -228,6 +228,10 @@ public class MainFrame extends javax.swing.JFrame {
 
             String filename = getFilename(selectedValue);
             
+            int totalFileWords = getTotalWords(filename);
+            WordCounterRMIServer server = new WordCounterRMIServer();
+            server.connection();
+            
             String sepatator = "---------------------------------------\n";
             log.append(sepatator);
 
@@ -246,6 +250,8 @@ public class MainFrame extends javax.swing.JFrame {
             
             msConc.setText((endTime - startTime) + " ms");
             counterConc.setText(String.valueOf(wordCountConcurrent));
+            
+            
             
             log.getCaret().setDot(Integer.MAX_VALUE);
         } catch (IOException ex) {
