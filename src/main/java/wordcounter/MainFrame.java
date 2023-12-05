@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -319,6 +319,15 @@ public class MainFrame extends javax.swing.JFrame {
     private void clientBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientBtnActionPerformed
         String Ip=JOptionPane.showInputDialog(null, "Server IP", "Client", JOptionPane.PLAIN_MESSAGE);
         client.startClient(Ip, log);
+        
+        try {
+            UUID uuid = server.generateID();
+        
+            server.connectClient(uuid, log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         serverBtn.setVisible(false);
     }//GEN-LAST:event_clientBtnActionPerformed
 
@@ -332,6 +341,39 @@ public class MainFrame extends javax.swing.JFrame {
     private void btnInitParaleloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInitParaleloActionPerformed
         selectedValue = (String) ComboWords.getSelectedItem();
         filename = getFilename(selectedValue);
+        
+        try {
+        List<UUID> connectedClients = server.getConnectedClients();
+        int totalClients = connectedClients.size();
+        int wordsPerClient = getTotalWords(filename) / totalClients;
+
+        String separator = "---------------------------------------\n";
+        log.append(separator);
+
+        long totalExecutionTime = 0;
+
+        for (UUID clientId : connectedClients) {
+            long startTime = System.currentTimeMillis();
+            int startWord = wordsPerClient * connectedClients.indexOf(clientId);
+            int endWord = startWord + wordsPerClient - 1;
+            
+            // Aquí necesitas llamar al método remoto countWords del cliente
+            int wordCount = server.countWords(filename, startWord, endWord);
+
+            long endTime = System.currentTimeMillis();
+            totalExecutionTime += (endTime - startTime);
+
+            log.append("Client " + clientId.toString() + ": " + wordCount + " words in "
+                    + (endTime - startTime) + " ms\n");
+        }
+
+        log.append("Total execution time: " + totalExecutionTime + " ms\n");
+        msParalela.setText(totalExecutionTime + " ms");
+
+        log.getCaret().setDot(Integer.MAX_VALUE);
+    } catch (IOException ex) {
+        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+    }
     }//GEN-LAST:event_btnInitParaleloActionPerformed
 
 

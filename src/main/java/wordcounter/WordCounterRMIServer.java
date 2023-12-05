@@ -1,14 +1,26 @@
 package wordcounter;
 
+import java.util.List;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import javax.swing.JTextArea;
 
 public class WordCounterRMIServer extends UnicastRemoteObject implements WordCounterRMI {
+    private List<UUID> connectedClients = new ArrayList<>();
+    
+    public UUID generateID() {
+        UUID id = UUID.randomUUID();
+        return id;
+    }
+    
     public WordCounterRMIServer() throws RemoteException {
         super();
     }
@@ -55,5 +67,14 @@ public class WordCounterRMIServer extends UnicastRemoteObject implements WordCou
         } catch (IOException e) {
             throw new RemoteException("Error while reading the file.", e);
         }
+    }
+    
+    public void connectClient(UUID clientId, JTextArea logger) throws RemoteException {
+        connectedClients.add(clientId);
+        logger.append("Client connected: " + clientId.toString() + "\n");
+    }
+
+    public List<UUID> getConnectedClients() {
+        return connectedClients;
     }
 }
